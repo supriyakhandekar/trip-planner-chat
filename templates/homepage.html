@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <title>Flask_Chat_App</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+ </head>
+ <body>
+   <div class='top-container'>
+     <h3 class='header'>Trip Planner Chat</h3>
+     <div class='login-logout-container'>
+       <div class='login-button' onclick="location.href = '/login';">Login</div>
+       <div class='logout-button' onclick="location.href = '/logout';">Logout</div>
+     </div>
+   </div>
+   <div class='user-profile-container'>
+        {% if current_user.is_authenticated %}
+        <p class='current-user'>Welcome</p>
+        <div class='user_name' onclick="location.href = '/user_{{current_user.username}}';"><b>{{ current_user.username }}</b></div>
+        {% endif %}
+  </div>
+  </div>
+  <div class='message-container'>
+     <div class="message_holder">
+       {% for msg in history %}
+       <div class='message-box'>
+        <div class='message' id='message-{{msg.index}}'>{{msg.user}}: {{msg.message}}</div>
+        <div class='category-box'>
+          <div id='flight' class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Flight {{msg.user}}</div>
+          <div id='hotel'class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Hotel</div>
+          <div id='activity' class='category' onclick="addtoCategory('{{msg.index}}', this.id)">activities</div>
+          <div id='food'class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Food</div>
+        </div>
+      </div>
+       {% endfor %}
+     </div>
+     <button class='link_button' onclick="displayLinks()">Show Links</button>
+     <div id='links'>
+      <table>
+       <tr>
+         <th>Link</th>
+         <th>Original Message</th>
+       </tr>
+       {% for link in links %}
+       <tr>
+         <td>{{link.link}}</td>
+         <td>{{link.original}}</td>
+       </tr>
+       {% endfor %}
+     </table>
+     </div>
+      <button class='category_button' onclick="displayCategories()">Categories</button>
+      <div id='categories'>
+       <div>
+        <div>
+          <div class='category'>Flight:</div>
+          {% for entry in flight %}
+          <div>{{entry.flight}}</div>
+          {% endfor %}
+          <div class='category'>Hotel:</div>
+          {% for entry in hotel %}
+          <div>{{entry.hotel}}</div>
+          {% endfor %}
+          <div class='category'>activities:</div>
+          {% for entry in activity %}
+          <div>{{entry.activity}}</div>
+          {% endfor %}
+          <div class='category'>Food:</div>
+          {% for entry in food %}
+          <div>{{entry.food}}</div>
+          {% endfor %}
+        </div>
+      </table>
+      </div>
+    </div>
+  </div>
+   <form action="" method="POST">
+     <input type="text" class="message" placeholder="Messages"/>
+     <input type="submit"/>
+   </form>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+   <script type="text/javascript">
+     //var name = current_user.username
+     var socket = io.connect('http://' + document.domain + ':' + location.port);
+     socket.on( 'connect', function() {
+       socket.emit( 'my event', {
+         data: 'User Connected'
+       } )
+       var form = $( 'form' ).on( 'submit', function( e ) {
+         e.preventDefault()
+         let message = $( 'input.message' ).val()
+         socket.emit( 'my event', {
+           username: '{{current_user.username}}',
+           message : message
+         })
+         $( 'input.message' ).val( '' ).focus()
+       } )
+     } )
+
+     socket.on( 'my response', function( msg ) {
+       if (typeof msg.message !== 'undefined') {
+          message = '<div class="message-box" onclick = "location.href = ' +  '/user_' + msg.username + '">' + 'User:  '  + msg.username +  msg.message;
+          message = message + "<div class='category-box'>" +
+            "<div id='flight' class='category' >Flight</div>" +
+            "<div id='hotel'class='category' >Hotel</div>" +
+            "<div id='activity' class='category' >activities</div>" +
+            "<div id='food' class='category'>Food</div>" +
+          "</div>";
+
+
+          $( 'div.message_holder' ).append( '<div>' + message +'</div>' )
+       }
+
+     })
+
+    function displayLinks() {
+        var x = document.getElementById("links");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+        x.scrollTop = x.scrollHeight;
+    }
+
+
+    function determineCategory(message) {
+      //handles only website case for some airlines/travel sites
+      var airlines_domains = ['united', 'delta','american','jetblue', 'kayak', 'expedia'];
+      for (var i in airlines_domains) {
+        if (message.includes(airlines_domains[i])) {
+          $.post("http://127.0.0.1:5000/category-update",  {'message': message, 'type': 'airline'}, function(data, status) {
+          });
+      }
+    }
+  }
+
+    function displayCategories() {
+
+      var history_arr = '{{history}}';
+      history_arr = history_arr.split(';');
+      for (var i=0;i < history_arr.length; i++) {
+        determineCategory(history_arr[i]);
+      }
+
+      var x = document.getElementById("categories");
+
+      if (x.style.display === "none") {
+          x.style.display = "block";
+      } else {
+          x.style.display = "none";
+      }
+      x.scrollTop = x.scrollHeight;
+    }
+
+
+    function addtoCategory(id, category) {
+      //alert(id);
+      //alert(message);
+      //debugger;
+      console.log(id);
+      console.log(category)
+      var message = document.getElementById(id);
+
+      //var message_arr = document.getElementsByClassName('message');
+      //var message_data = message_arr[message_arr.length-2].innerHTML
+      //var sep = message_data.indexOf(":");
+      //message_data = message_data.substring(sep + 2, message_data.length);
+
+      $.post("http://127.0.0.1:5000/category-update",  {'message': message.innerHTML, 'type': id}, function(data, status) {
+          //alert("Data: " + data + "\nStatus: " + status);
+      });
+
+    }
+
+        /*
+
+      } else if (id == 'hotel') {
+
+        $.post("http://127.0.0.1:5000/category-update",  {'message': message_data}, function(data, status) {
+              alert("Data: " + data + "\nStatus: " + status);
+        });
+
+      } else if (id == 'activity') {
+
+        $.post("http://127.0.0.1:5000/category-update",  {'message': message_data}, function(data, status) {
+              alert("Data: " + data + "\nStatus: " + status);
+        });
+
+      } else {
+
+        $.post("http://127.0.0.1:5000/category-update",  {'message': message_data}, function(data, status) {
+              alert("Data: " + data + "\nStatus: " + status);
+        });
+
+      }
+    }
+
+*/
+
+
+      /*
+      switch(id) {
+
+
+        case 'message-1':
+
+        /*
+            $.ajax({
+                url: '/category-update',
+                type: "POST",
+                data: 'message-1'
+                processData: false,
+                contentType: "charset=UTF-8",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+        case 'message-2':
+          $('#message-2').post( "/category-update", {
+            test:test
+          });
+        case 'message-3':
+          $('#message-3').post( "/category-update", {
+            test:test
+          });
+
+        case 'message-4':
+          $('#message-4').post( "/category-update", {
+            test:test
+          });
+      };
+
+      */
+
+
+   </script>
+
+ </body>
+ </html>

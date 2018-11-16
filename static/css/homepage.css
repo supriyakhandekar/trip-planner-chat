@@ -13,7 +13,7 @@ body {
 .user-profile-container {
 
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
 
 }
 
@@ -69,6 +69,7 @@ body {
   display: flex;
   font-size: 30px;
   margin-right: 140px;
+  font-family: 'Montserrat', sans-serif;
 
 }
 
@@ -102,7 +103,21 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
+  margin-left: 15px;
+  margin-top: 10px;
 
+}
+
+.category-scroll-box {
+
+  height: 300px;
+  width: 300px;
+  background-color: #8cc97a;
+  overflow: auto;
+  padding-left: 10px;
+  padding-top: 20px;
+  font-size: 13px;
+  font-weight: 100;
 }
 
 .user_name div:hover {

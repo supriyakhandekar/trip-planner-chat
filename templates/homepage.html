@@ -3,10 +3,11 @@
  <head>
    <title>Flask_Chat_App</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
  </head>
  <body>
    <div class='top-container'>
-     <h3 class='header'>Trip Planner Chat</h3>
+     <h3 class='header'>Plan Your Next Trip Now</h3>
      <div class='login-logout-container'>
        <div class='login-button' onclick="location.href = '/login';">Login</div>
        <div class='logout-button' onclick="location.href = '/logout';">Logout</div>
@@ -52,22 +53,30 @@
       <div id='categories'>
        <div>
         <div>
-          <div class='category' id='category-flight'>Flight:</div>
-          {% for entry in flight %}
-          <div>{{entry.message}}</div>
-          {% endfor %}
-          <div class='category' id='category-hotel'>Hotel:</div>
-          {% for entry in hotel %}
-          <div>{{entry.message}}</div>
-          {% endfor %}
-          <div class='category'id='category-activity'>activities:</div>
-          {% for entry in activity %}
-          <div>{{entry.message}}</div>
-          {% endfor %}
-          <div class='category' id='category-food'>Food:</div>
-          {% for entry in food %}
-          <div>{{entry.message}}</div>
-          {% endfor %}
+          <div class='category'>Flight:</div>
+          <div class='category-scroll-box' id='category-flight'>
+            {% for entry in flight %}
+            <div>{{entry.message}}</div>
+            {% endfor %}
+          </div>
+          <div class='category' >Hotel:</div>
+          <div class='category-scroll-box' id='category-hotel'>
+            {% for entry in hotel %}
+            <div>{{entry.message}}</div>
+            {% endfor %}
+          </div>
+          <div class='category'>activities:</div>
+          <div class='category-scroll-box' id='category-activity'>
+            {% for entry in activity %}
+            <div>{{entry.message}}</div>
+            {% endfor %}
+          </div>
+          <div class='category' >Food:</div>
+          <div class='category-scroll-box' id='category-food'>
+            {% for entry in food %}
+            <div>{{entry.message}}</div>
+            {% endfor %}
+          </div>
         </div>
       </table>
       </div>
@@ -118,12 +127,9 @@
      socket.on( 'category response', function( msg ) {
 
           element_id = '#category-' + msg.category;
-          alert(element_id);
-          alert(msg.message);
 
           $(element_id).append('<div>' + msg.message + '</div>');
-          debugger;
-
+  
           //$( 'div.message_holder' ).append( '<div>' + message +'</div>' )
        }
      )

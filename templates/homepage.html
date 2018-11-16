@@ -112,7 +112,7 @@
        var cur_message_length = 'recent'
 
        if (typeof msg.message !== 'undefined') {
-          message = `<div class="message-box" > User : ${msg.username} ${msg.message}`;
+          message = `<div class="message-box" >${msg.username}: ${msg.message}`;
           message = message + `<div class='category-box'><div id='flight' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Flight</div>
             <div id='hotel' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Hotel</div>
             <div id='activity' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>activities</div>
@@ -129,7 +129,7 @@
           element_id = '#category-' + msg.category;
 
           $(element_id).append('<div>' + msg.message + '</div>');
-  
+
           //$( 'div.message_holder' ).append( '<div>' + message +'</div>' )
        }
      )

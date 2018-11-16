@@ -14,6 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
 from sqlalchemy import Table
+from sqlalchemy import desc
 from flask_wtf import FlaskForm
 
 from flask_login import logout_user
@@ -24,7 +25,7 @@ import sqlite3
 import re
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
-database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_16.db"))
+database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_17.db"))
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -88,38 +89,36 @@ class Links(db.Model):
         self.original = original
         super(Links,self).__init__()
 
-
 class Hotel(db.Model):
     index = db.Column(db.Integer, nullable= False, primary_key=True)
-    hotel = db.Column(db.String(200), nullable = False)
+    message = db.Column(db.String(200), nullable = False)
 
-    def __init__(self, hotel):
-        self.hotel = hotel
-        super(Hotel,self).__init__()
-
+    def __init__(self, message):
+        self.message= message
+        super(Hotel, self).__init__()
 
 class Flight(db.Model):
     index = db.Column(db.Integer, nullable= False, primary_key=True)
-    flight = db.Column(db.String(200), nullable = False)
+    message= db.Column(db.String(200), nullable = False)
 
-    def __init__(self, flight):
-        self.flight = flight
+    def __init__(self, message):
+        self.message = message
         super(Flight,self).__init__()
 
 class Activity(db.Model):
     index = db.Column(db.Integer, nullable= False, primary_key=True)
-    activity= db.Column(db.String(200), nullable = False)
+    message= db.Column(db.String(200), nullable = False)
 
-    def __init__(self, activity):
-        self.activity = activity
+    def __init__(self, message):
+        self.message = message
         super(Activity,self).__init__()
 
 class Food(db.Model):
     index = db.Column(db.Integer, nullable= False, primary_key=True)
-    food= db.Column(db.String(200), nullable = False)
+    message= db.Column(db.String(200), nullable = False)
 
-    def __init__(self, food):
-        self.food = food
+    def __init__(self, message):
+        self.message = message
         super(Food,self).__init__()
 
 
@@ -211,20 +210,21 @@ def categoryUpdate():
     #asd = request.json
     #print(asd)
     print('message received')
+    print(request.form)
+    print('type is')
     print(request.form['type'])
     #print(request.form['message'])
     if (request.form['type'] == 'hotel'):
         print('in hotel')
-        entry = Hotel(hotel=request.form['message'])
-
+        entry = Hotel(message=request.form['message'])
     elif (request.form['type'] == 'flight'):
         print('in flight')
-        entry = Flight(flight=request.form['message'])
+        entry = Flight(message=request.form['message'])
     elif (request.form['type'] == 'food'):
-        entry = Food(food=request.form['message'])
+        entry = Food(message=request.form['message'])
     else:
         print('in activity')
-        entry = Activity(activity=request.form['message'])
+        entry = Activity(message=request.form['message'])
 
     db.session.add(entry)
     db.session.commit()
@@ -252,20 +252,80 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
     print(json)
     print('printing message')
 
-    if ('message' in json):
-        urls = re.findall('https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+', json['message'])
-        if (urls):
-            link_entry = Links(link= str(urls), original=json['message'])
-            db.session.add(link_entry)
-            db.session.commit()
-
-        user_message = UserMessage(user=current_user.username, message=json['message'])
-        db.session.add(user_message)
-        db.session.commit()
+    user_message = UserMessage(user=current_user.username, message=json['message'])
+    db.session.add(user_message)
+    db.session.commit()
 
     socketio.emit('my response', json, callback=messageReceived, broadcast = True)
 
 #def classifyEvent(event):
+
+@socketio.on('category update')
+def handle_my_category_update(json, methods=['GET', 'POST']):
+
+    #category = json['category'];
+
+    #if (category == 'hotel'):
+    #    print('in hotel')
+    #    entry = Hotel(hotel=json['message'])
+
+    #elif (json['category'] == 'flight'):
+    #    print('in flight')
+    #    entry = Flight(flight=json['message'])
+    #elif (json['category'] == 'food'):
+    #    entry = Food(food=json['message'])
+    #else:
+    #    print('in activity')
+    #    entry = Activity(activity=json['message'])
+
+    #user_message = UserMessage(user=current_user.username, message=json['message'])
+    #db.session.add(entry)
+    #db.session.commit()
+    print('in category update')
+    print('id is')
+    print(json['id'])
+
+    id = json['id']
+    print('category update')
+    print(json['category'])
+
+    if (not json['need_recent_msg']):
+        search = UserMessage.query.filter_by(index=id).first()
+        #if (json['category'] == 'hotel'):
+        #    search = Hotel.query.filter_by(index=id).first()
+        #elif (json['category'] == 'activity'):
+        #    search = Activity.query.filter_by(index=id).first()
+        #elif (json['category'] == 'flight'):
+        #    search = Flight.query.filter_by(index=id).first()
+        #else:
+        #    search = Food.query.filter_by(index=id).first()
+        print('search is!!')
+
+    else:
+        print('here in -1 section ')
+        category = json['category']
+        category_type = ''
+
+        search = db.session.query(UserMessage).order_by(desc(UserMessage.index)).first()
+
+        #if (category == 'hotel'):
+        #    print('IN HOTEL!')
+        #    search = db.session.query(Hotel).order_by(desc(Hotel.index)).first()
+        #elif (category == 'activity'):
+        #    search = db.session.query(Activity).order_by(desc(Activity.index)).first()
+        #elif (category == 'flight'):
+        #    search = db.session.query(Flight).order_by(desc(Flight.index)).first()
+        #else:
+        #    search = db.session.query(Food).order_by(desc(Food.index)).first()
+
+        #get most recent message of the specific database
+    print(search)
+    print(search.message)
+    json['message'] = search.message
+    print('new json is')
+    print(json)
+    print('about to send category response')
+    socketio.emit('category response', json, callback=messageReceived, broadcast = True)
 
 
 def create_connection(db_file):
@@ -278,6 +338,6 @@ def create_connection(db_file):
         print(e)
 
 if __name__ == '__main__':
-    create_connection("C:\\sqlite\db\user_message_16.db")
+    create_connection("C:\\sqlite\db\user_message_17.db")
     db.create_all()
     socketio.run(app, debug=True)

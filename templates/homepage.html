@@ -25,10 +25,10 @@
        <div class='message-box'>
         <div class='message' id='message-{{msg.index}}'>{{msg.user}}: {{msg.message}}</div>
         <div class='category-box'>
-          <div id='flight' class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Flight {{msg.user}}</div>
-          <div id='hotel'class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Hotel</div>
-          <div id='activity' class='category' onclick="addtoCategory('{{msg.index}}', this.id)">activities</div>
-          <div id='food'class='category' onclick="addtoCategory('{{msg.index}}', this.id)">Food</div>
+          <div id='flight' class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Flight</div>
+          <div id='hotel'class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Hotel</div>
+          <div id='activity' class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Activities</div>
+          <div id='food'class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Food</div>
         </div>
       </div>
        {% endfor %}
@@ -52,21 +52,21 @@
       <div id='categories'>
        <div>
         <div>
-          <div class='category'>Flight:</div>
+          <div class='category' id='category-flight'>Flight:</div>
           {% for entry in flight %}
-          <div>{{entry.flight}}</div>
+          <div>{{entry.message}}</div>
           {% endfor %}
-          <div class='category'>Hotel:</div>
+          <div class='category' id='category-hotel'>Hotel:</div>
           {% for entry in hotel %}
-          <div>{{entry.hotel}}</div>
+          <div>{{entry.message}}</div>
           {% endfor %}
-          <div class='category'>activities:</div>
+          <div class='category'id='category-activity'>activities:</div>
           {% for entry in activity %}
-          <div>{{entry.activity}}</div>
+          <div>{{entry.message}}</div>
           {% endfor %}
-          <div class='category'>Food:</div>
+          <div class='category' id='category-food'>Food:</div>
           {% for entry in food %}
-          <div>{{entry.food}}</div>
+          <div>{{entry.message}}</div>
           {% endfor %}
         </div>
       </table>
@@ -99,20 +99,34 @@
      } )
 
      socket.on( 'my response', function( msg ) {
-       if (typeof msg.message !== 'undefined') {
-          message = '<div class="message-box" onclick = "location.href = ' +  '/user_' + msg.username + '">' + 'User:  '  + msg.username +  msg.message;
-          message = message + "<div class='category-box'>" +
-            "<div id='flight' class='category' >Flight</div>" +
-            "<div id='hotel'class='category' >Hotel</div>" +
-            "<div id='activity' class='category' >activities</div>" +
-            "<div id='food' class='category'>Food</div>" +
-          "</div>";
 
+       var cur_message_length = 'recent'
+
+       if (typeof msg.message !== 'undefined') {
+          message = `<div class="message-box" > User : ${msg.username} ${msg.message}`;
+          message = message + `<div class='category-box'><div id='flight' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Flight</div>
+            <div id='hotel' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Hotel</div>
+            <div id='activity' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>activities</div>
+            <div id='food' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Food</div>
+           </div>`;
 
           $( 'div.message_holder' ).append( '<div>' + message +'</div>' )
        }
 
      })
+
+     socket.on( 'category response', function( msg ) {
+
+          element_id = '#category-' + msg.category;
+          alert(element_id);
+          alert(msg.message);
+
+          $(element_id).append('<div>' + msg.message + '</div>');
+          debugger;
+
+          //$( 'div.message_holder' ).append( '<div>' + message +'</div>' )
+       }
+     )
 
     function displayLinks() {
         var x = document.getElementById("links");
@@ -155,22 +169,36 @@
     }
 
 
-    function addtoCategory(id, category) {
-      //alert(id);
-      //alert(message);
-      //debugger;
+    function addtoCategory(id, category, message) {
+
       console.log(id);
       console.log(category)
-      var message = document.getElementById(id);
+      debugger;
 
-      //var message_arr = document.getElementsByClassName('message');
-      //var message_data = message_arr[message_arr.length-2].innerHTML
-      //var sep = message_data.indexOf(":");
-      //message_data = message_data.substring(sep + 2, message_data.length);
+      var message_id = 'message-' + id;
+      var message;
 
-      $.post("http://127.0.0.1:5000/category-update",  {'message': message.innerHTML, 'type': id}, function(data, status) {
-          //alert("Data: " + data + "\nStatus: " + status);
+      //set BooleanField
+      var need_recent_msg = false;
+
+      if (id === -1) {
+        need_recent_msg = true;
+        message = message;
+      } else {
+          message = document.getElementById(message_id).innerHTML;
+      }
+
+      //update category
+      $.post("http://127.0.0.1:5000/category-update",  {'message': message, 'type': category, 'id': message_id, 'need_recent_msg':need_recent_msg}, function(data, status) {
       });
+
+      //emit to socket
+      socket.emit('category update', {
+        id : id,
+        category: category,
+        message: message,
+        need_recent_msg:need_recent_msg
+      })
 
     }
 

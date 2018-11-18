@@ -56,25 +56,25 @@
           <div class='category'>Flight:</div>
           <div class='category-scroll-box' id='category-flight'>
             {% for entry in flight %}
-            <div>{{entry.message}}</div>
+              <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
             {% endfor %}
           </div>
           <div class='category' >Hotel:</div>
           <div class='category-scroll-box' id='category-hotel'>
             {% for entry in hotel %}
-            <div>{{entry.message}}</div>
+            <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
             {% endfor %}
           </div>
           <div class='category'>activities:</div>
           <div class='category-scroll-box' id='category-activity'>
             {% for entry in activity %}
-            <div>{{entry.message}}</div>
+            <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
             {% endfor %}
           </div>
           <div class='category' >Food:</div>
           <div class='category-scroll-box' id='category-food'>
             {% for entry in food %}
-            <div>{{entry.message}}</div>
+            <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
             {% endfor %}
           </div>
         </div>
@@ -109,7 +109,7 @@
 
      socket.on( 'my response', function( msg ) {
 
-       var cur_message_length = 'recent'
+       var cur_message_length = 'recent';
 
        if (typeof msg.message !== 'undefined') {
           message = `<div class="message-box" >${msg.username}: ${msg.message}`;
@@ -126,8 +126,8 @@
 
      socket.on( 'category response', function( msg ) {
 
+          alert(msg.message);
           element_id = '#category-' + msg.category;
-
           $(element_id).append('<div>' + msg.message + '</div>');
 
           //$( 'div.message_holder' ).append( '<div>' + message +'</div>' )
@@ -156,6 +156,12 @@
     }
   }
 
+    function addVote(element) {
+      element.innerHTML = element.innerHTML + '***';
+    }
+
+
+
     function displayCategories() {
 
       var history_arr = '{{history}}';
@@ -172,6 +178,12 @@
           x.style.display = "none";
       }
       x.scrollTop = x.scrollHeight;
+    }
+
+    function setConfirmed(element) {
+
+      element.setAttribute("style", "color:#46b623; background-color: white;");
+
     }
 
 

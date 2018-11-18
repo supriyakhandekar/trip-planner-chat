@@ -172,6 +172,15 @@ body {
 
 }
 
+.voting-box {
+
+  display: flex;
+  flex-direction: row;
+  height: 20px;
+
+
+}
+
 
 .message-box {
 

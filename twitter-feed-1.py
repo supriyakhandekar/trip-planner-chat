@@ -25,7 +25,7 @@ import sqlite3
 import re
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
-database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_17.db"))
+database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_18.db"))
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -205,15 +205,7 @@ def sessions():
 
 @app.route('/category-update', methods=['GET', 'POST'])
 def categoryUpdate():
-    #print('message received')
-    #print(request.args.get('canvas_data'))
-    #asd = request.json
-    #print(asd)
-    print('message received')
-    print(request.form)
-    print('type is')
-    print(request.form['type'])
-    #print(request.form['message'])
+
     if (request.form['type'] == 'hotel'):
         print('in hotel')
         entry = Hotel(message=request.form['message'])
@@ -263,68 +255,22 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 @socketio.on('category update')
 def handle_my_category_update(json, methods=['GET', 'POST']):
 
-    #category = json['category'];
-
-    #if (category == 'hotel'):
-    #    print('in hotel')
-    #    entry = Hotel(hotel=json['message'])
-
-    #elif (json['category'] == 'flight'):
-    #    print('in flight')
-    #    entry = Flight(flight=json['message'])
-    #elif (json['category'] == 'food'):
-    #    entry = Food(food=json['message'])
-    #else:
-    #    print('in activity')
-    #    entry = Activity(activity=json['message'])
-
-    #user_message = UserMessage(user=current_user.username, message=json['message'])
-    #db.session.add(entry)
-    #db.session.commit()
-    print('in category update')
-    print('id is')
-    print(json['id'])
-
     id = json['id']
-    print('category update')
-    print(json['category'])
 
+    print(json)
     if (not json['need_recent_msg']):
+        print('in regular message');
         search = UserMessage.query.filter_by(index=id).first()
-        #if (json['category'] == 'hotel'):
-        #    search = Hotel.query.filter_by(index=id).first()
-        #elif (json['category'] == 'activity'):
-        #    search = Activity.query.filter_by(index=id).first()
-        #elif (json['category'] == 'flight'):
-        #    search = Flight.query.filter_by(index=id).first()
-        #else:
-        #    search = Food.query.filter_by(index=id).first()
-        print('search is!!')
 
     else:
-        print('here in -1 section ')
-        category = json['category']
-        category_type = ''
 
         search = db.session.query(UserMessage).order_by(desc(UserMessage.index)).first()
+        print(search.message)
 
-        #if (category == 'hotel'):
-        #    print('IN HOTEL!')
-        #    search = db.session.query(Hotel).order_by(desc(Hotel.index)).first()
-        #elif (category == 'activity'):
-        #    search = db.session.query(Activity).order_by(desc(Activity.index)).first()
-        #elif (category == 'flight'):
-        #    search = db.session.query(Flight).order_by(desc(Flight.index)).first()
-        #else:
-        #    search = db.session.query(Food).order_by(desc(Food.index)).first()
-
-        #get most recent message of the specific database
-    print(search)
-    print(search.message)
     json['message'] = search.message
     print('new json is')
     print(json)
-    print('about to send category response')
+
     socketio.emit('category response', json, callback=messageReceived, broadcast = True)
 
 
@@ -338,6 +284,6 @@ def create_connection(db_file):
         print(e)
 
 if __name__ == '__main__':
-    create_connection("C:\\sqlite\db\user_message_17.db")
+    create_connection("C:\\sqlite\db\user_message_18.db")
     db.create_all()
     socketio.run(app, debug=True)

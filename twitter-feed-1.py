@@ -3,6 +3,7 @@ from flask import Flask, render_template, session, request, jsonify
 from flask_login import LoginManager, UserMixin
 from flask_session import Session
 from flask import redirect, flash
+#import flask_socketio
 from flask_socketio import SocketIO
 
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
@@ -34,7 +35,6 @@ app.config['SECRET_KEY'] = '123445667'
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 
 socketio = SocketIO(app)
-
 db = SQLAlchemy(app)
 
 @login_manager.user_loader
@@ -250,7 +250,6 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 
     socketio.emit('my response', json, callback=messageReceived, broadcast = True)
 
-#def classifyEvent(event):
 
 @socketio.on('category update')
 def handle_my_category_update(json, methods=['GET', 'POST']):
@@ -286,4 +285,6 @@ def create_connection(db_file):
 if __name__ == '__main__':
     create_connection("C:\\sqlite\db\user_message_18.db")
     db.create_all()
-    socketio.run(app, debug=True)
+    #app.run(DEBUG=True)
+    print('about to run')
+    socketio.run(app, DEBUG=True)

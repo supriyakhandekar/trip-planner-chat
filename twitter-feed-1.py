@@ -108,7 +108,6 @@ class Flight(db.Model):
 class Activity(db.Model):
     index = db.Column(db.Integer, nullable= False, primary_key=True)
     message= db.Column(db.String(200), nullable = False)
-
     def __init__(self, message):
         self.message = message
         super(Activity,self).__init__()
@@ -284,7 +283,7 @@ def create_connection(db_file):
 
 if __name__ == '__main__':
     create_connection("C:\\sqlite\db\user_message_18.db")
+    console.log('created connection')
     db.create_all()
-    #app.run(DEBUG=True)
-    print('about to run')
-    socketio.run(app, DEBUG=True)
+    #print('about to run')
+    #socketio.run(app, DEBUG=True)

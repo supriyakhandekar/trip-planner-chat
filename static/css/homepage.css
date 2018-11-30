@@ -28,27 +28,30 @@ body {
   width: 70px;
 }
 
+
 .login-button {
 
   height: 40px;
   width: 80px;
-  background-color: #4286f4;
+  background-color: #8cc97a;
   font-size: 11px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 10px;
+  border-radius: 10px;
 
 }
 
 .logout-button {
   height: 40px;
   width: 80px;
-  background-color: #4286f4;
+  background-color: #8cc97a;
   font-size: 11px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
 
 }
 
@@ -62,14 +65,17 @@ body {
   height: 500px;
   width: 400px;
   overflow: auto;
+  border: 1px solid #FF5964;
+  border-radius: 10px;
 }
 
 .header {
 
   display: flex;
-  font-size: 30px;
+  font-size: 45px;
   margin-right: 140px;
   font-family: 'Poppins', sans-serif;
+  color: #045ff2;
 
 }
 
@@ -77,6 +83,8 @@ body {
   height: 500px;
   display:flex;
   flex-direction: column;
+  margin-top: 15px;
+  margin-right: 40px;
 }
 
 .user-chat {
@@ -125,7 +133,7 @@ body {
 
 .user_name div:hover {
   background-color: #46b623;
-  color:white;
+
 }
 
 .link_button {
@@ -145,15 +153,16 @@ body {
 
 .category {
 
-  height: 15px;
+  height: 20px;
   display: flex;
-  width: 45px;
+  width: 55px;
   margin-left: 10px;
   margin-right: 10px;
   font-size: 10px;
   border-radius: 25px;
-  border: 1px solid blue;
+  border: 1.5px solid #045ff2;
   justify-content: center;
+  align-items: center;
   font-family: 'Nunito', sans-serif;
 }
 
@@ -169,12 +178,24 @@ body {
 
   display: flex;
   justify-content: flex-start;
-  color: #181818;
   margin-top: 25px;
   margin-bottom:20px;
 
 }
 
+.input-message {
+
+  height: 40px;
+  width: 200px;
+  margin-top:20px;
+}
+
+.submit-message {
+
+  height:20px;
+  width:100px;
+
+}
 .voting-box {
   display: flex;
   flex-direction: row;
@@ -187,9 +208,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 90px;
-  background-color: #f88379;
   padding-left: 20px;
-  border-bottom: 1px solid white;
   padding-bottom: 10px;
 }
 
@@ -206,6 +225,27 @@ body {
   width: 100%;
   flex-direction: row;
 
+}
 
+.sign-in-body {
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+
+}
+
+.header-login {
+
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.sign-in-box {
+
+  display: flex;
+  flex-direction: column;
+  color: #045ff2;
 
 }

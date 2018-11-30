@@ -11,7 +11,7 @@
  </head>
  <body>
    <div class='top-container'>
-     <h3 class='header'>Plan Your Next Trip Now</h3>
+     <h3 class='header'>Itinerize</h3>
      <div class='login-logout-container'>
        <div class='login-button' onclick="location.href = '/login';">Login</div>
        <div class='logout-button' onclick="location.href = '/logout';">Logout</div>
@@ -26,27 +26,27 @@
   <div class='chat-container'>
     <div id='categories'>
         <div class='category-scroll-box' id='category-flight'>
-          <img src="{{url_for('static', filename='airplane.jpg')}}"class='category-icon'/>
+          <img src="{{url_for('static', filename='airplane.png')}}"class='category-icon'/>
           {% for entry in flight %}
-            <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
+            <div onClick="addVote(this,'flight')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
           {% endfor %}
         </div>
         <div class='category-scroll-box' id='category-hotel'>
           <img src="{{url_for('static', filename='hotel.jpg')}}"class='category-icon'/>
           {% for entry in hotel %}
-          <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
+          <div onClick="addVote(this,'hotel')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
           {% endfor %}
         </div>
         <div class='category-scroll-box' id='category-activity'>
           <img src="{{url_for('static', filename='activity.png')}}"class='category-icon'/>
           {% for entry in activity %}
-          <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
+          <div onClick="addVote(this,'activity')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
           {% endfor %}
         </div>
         <div class='category-scroll-box' id='category-food'>
           <img src="{{url_for('static', filename='food.png')}}"class='category-icon'/>
           {% for entry in food %}
-          <div onClick="addVote(this)" ondblclick="setConfirmed(this)">{{entry.message}}</div>
+          <div onClick="addVote(this,'food')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
           {% endfor %}
         </div>
     </div>
@@ -65,8 +65,8 @@
          {% endfor %}
        </div>
        <form action="" method="POST">
-         <input type="text" class="message" placeholder="Messages"/>
-         <input type="submit"/>
+         <input type="text" class='input-message' placeholder="Let's go to.."/>
+         <input type="submit" class='submit-message'/>
        </form>
     </div>
   </div>
@@ -96,7 +96,7 @@
        var cur_message_length = 'recent';
 
        if (typeof msg.message !== 'undefined') {
-          message = `<div class="message-box" >${msg.username}: ${msg.message}`;
+          message = `<div class="message-box" ><div>${msg.username}:</div> <div>${msg.message}</div>`;
           message = message + `<div class='category-box'><div id='flight' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Flight</div>
             <div id='hotel' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Hotel</div>
             <div id='activity' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>activities</div>
@@ -140,8 +140,11 @@
     }
   }
 
-    function addVote(element) {
-      element.innerHTML = element.innerHTML + '***';
+    //Allows the message to get upvoted and it updates the DB
+
+    function addVote(message, category) {
+      $.post("http://127.0.0.1:5000/add-vote", {'message': message, 'category':category}, function(data, status) {
+      });
     }
 
 
@@ -170,7 +173,6 @@
       element.setAttribute("style", "color:#46b623; background-color: white;");
 
     }
-
 
 
     function addtoCategory(id, category, message) {

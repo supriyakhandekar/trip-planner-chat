@@ -2,8 +2,10 @@
     <head>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
       <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko:600|Varela+Round" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Nunito|Poppins" rel="stylesheet">
     </head>
 {% block content %}
+  <div class='registration-container'>
     <h1>Register</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -37,5 +39,6 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
+  </div>
 {% endblock %}
 </html>

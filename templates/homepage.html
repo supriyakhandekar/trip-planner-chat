@@ -11,65 +11,88 @@
  </head>
  <body>
    <div class='top-container'>
-     <h3 class='header'>Itinerize</h3>
+     <div class='logo-container'>
+       <img class='main-logo'src="{{url_for('static', filename='globe.png')}}"/>
+       <h3 class='header'>Itinerize</h3>
+     </div>
      <div class='login-logout-container'>
+       {% if not current_user.is_authenticated %}
        <div class='login-button' onclick="location.href = '/login';">Login</div>
+        <div class='login-button' onclick="location.href = '/landing';">Homepage</div>
+       {% endif %}
        <div class='logout-button' onclick="location.href = '/logout';">Logout</div>
      </div>
    </div>
    <div class='user-profile-container'>
         {% if current_user.is_authenticated %}
-        <p class='current-user'>Welcome</p>
-        <div class='user_name' onclick="location.href = '/user_{{current_user.username}}';"><b>{{ current_user.username }}</b></div>
+        <div class='user_name' onclick="location.href = '/user_{{current_user.username}}';">Welcome <b style="margin-left: 10px;">{{ current_user.username }}</b></div>
+        <div class='generate-itinerary-button' onclick="getItinerary();location.href = '/itinerary-confirmation';">Generate Itinerary</div>
         {% endif %}
   </div>
   <div class='chat-container'>
-    <div id='categories'>
-        <div class='category-scroll-box' id='category-flight'>
-          <img src="{{url_for('static', filename='airplane.png')}}"class='category-icon'/>
-          {% for entry in flight %}
-            <div onClick="addVote(this,'flight')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
-          {% endfor %}
-        </div>
-        <div class='category-scroll-box' id='category-hotel'>
-          <img src="{{url_for('static', filename='hotel.jpg')}}"class='category-icon'/>
-          {% for entry in hotel %}
-          <div onClick="addVote(this,'hotel')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
-          {% endfor %}
-        </div>
-        <div class='category-scroll-box' id='category-activity'>
-          <img src="{{url_for('static', filename='activity.png')}}"class='category-icon'/>
-          {% for entry in activity %}
-          <div onClick="addVote(this,'activity')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
-          {% endfor %}
-        </div>
-        <div class='category-scroll-box' id='category-food'>
-          <img src="{{url_for('static', filename='food.png')}}"class='category-icon'/>
-          {% for entry in food %}
-          <div onClick="addVote(this,'food')" ondblclick="setConfirmed(this)">{{entry.message}}</div>
-          {% endfor %}
-        </div>
-    </div>
     <div class='message-container'>
        <div class="message_holder">
          {% for msg in history %}
          <div class='message-box'>
-          <div class='message' id='message-{{msg.index}}'>{{msg.user}}: {{msg.message}}</div>
+          <div class='message' id='message-{{msg.index}}'><b style="margin-right: 5px;">{{msg.user}}: </b> {{msg.message}}</div>
           <div class='category-box'>
-            <div id='flight' class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Flight</div>
-            <div id='hotel'class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Hotel</div>
-            <div id='activity' class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Activities</div>
-            <div id='food'class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')">Food</div>
+            <img src="{{url_for('static', filename='dining.svg')}}" class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')"></img>
+            <img src="{{url_for('static', filename='hotel.svg')}}" class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')"></img>
+            <img src="{{url_for('static', filename='activity.svg')}}" class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')"></img>
+            <img src="{{url_for('static', filename='flight.svg')}}" class='category' onclick="addtoCategory('{{msg.index}}', this.id, '{{msg.message}}')"></img>
           </div>
         </div>
          {% endfor %}
        </div>
        <form action="" method="POST">
-         <input type="text" class='input-message' placeholder="Let's go to.."/>
-         <input type="submit" class='submit-message'/>
+         <input type="text" class='message' placeholder="Message"/>
+         <input type="submit"/>
        </form>
-    </div>
-  </div>
+       </div>
+       <div id='categories'>
+         <img src="{{url_for('static', filename='dining.svg')}}"class='category-icon'></img>
+         <div class='category-scroll-box' id='category-food'>
+            {% for entry in food %}
+              <div class='message-category'>
+                <p class='category-single-message'>{{entry.message}}</p>
+                <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','food')"></img>
+                <p id='vote-{{entry.message}}-food' class='category-single-message'>{{entry.vote}}</p>
+              </div>
+            {% endfor %}
+        </div>
+        <img src="{{url_for('static', filename='activity.svg')}}"class='category-icon'></img>
+        <div class='category-scroll-box' id='category-activity'>
+             {% for entry in activity %}
+             <div class='message-category'>
+               <p class='category-single-message'>{{entry.message}}</p>
+               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','activity')"></img>
+               <p id='vote-{{entry.message}}-activity' class='category-single-message'>{{entry.vote}}</p>
+             </div>
+            {% endfor %}
+        </div>
+        <img src="{{url_for('static', filename='flight.svg')}}"class='category-icon'/>
+        <div class='category-scroll-box' id='category-flight'>
+             {% for entry in flight %}
+             <div class='message-category'>
+               <p class='category-single-message'>{{entry.message}}</p>
+               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','flight')"/>
+               <p class='category-single-message' id='vote-{{entry.message}}-flight'>{{entry.vote}}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <img src="{{url_for('static', filename='hotel.svg')}}"class='category-icon'/>
+        <div class='category-scroll-box' id='category-hotel'>
+             {% for entry in hotel %}
+             <div class='message-category'>
+               <p class='category-single-message'>{{entry.message}}</p>
+               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','hotel')"/>
+               <p class='category-single-message' id='vote-{{entry.message}}-hotel'>{{entry.vote}}</p>
+            </div>
+            {% endfor %}
+        </div>
+       </div>
+   </div>
+ </body>
    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
@@ -96,23 +119,34 @@
        var cur_message_length = 'recent';
 
        if (typeof msg.message !== 'undefined') {
-          message = `<div class="message-box" ><div>${msg.username}:</div> <div>${msg.message}</div>`;
+          message = `<div class="message-box"><div class='message'><b style="margin-right: 5px;">${msg.username}: </b><div>${msg.message}</div></div>`;
           message = message + `<div class='category-box'><div id='flight' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Flight</div>
             <div id='hotel' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Hotel</div>
             <div id='activity' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>activities</div>
             <div id='food' class='category' onclick='addtoCategory(-1, this.id, "${msg.message}")'>Food</div>
            </div>`;
 
-          $( 'div.message_holder' ).append( '<div>' + message +'</div>' )
+          $('div.message_holder' ).append( '<div>' + message +'</div>' )
        }
 
      })
 
      socket.on( 'category response', function( msg ) {
 
-          alert(msg.message);
-          element_id = '#category-' + msg.category;
-          $(element_id).append('<div>' + msg.message + '</div>');
+
+          if (msg.message != 'duplicate') {
+            element_id = '#category-' + msg.category;
+            //$(element_id).append('<div>' + msg.message + '</div>');
+            var x = `<div>
+                      <p>${msg.message}</p>
+                      <p id='vote-${msg.message}'>0</p>
+                      <button onClick="upVote('${msg.message}','${msg.category}')">Upvote</button>
+                    </div>`;
+
+            $(element_id).append(x);
+          }
+
+          //code to reveal message that says 'no duplicates allowed'
 
           //$( 'div.message_holder' ).append( '<div>' + message +'</div>' )
        }
@@ -142,9 +176,24 @@
 
     //Allows the message to get upvoted and it updates the DB
 
+/*
     function addVote(message, category) {
       $.post("http://127.0.0.1:5000/add-vote", {'message': message, 'category':category}, function(data, status) {
       });
+    }
+*/
+    function upVote(message, category) {
+
+      $.post("http://127.0.0.1:5000/up-vote", {'message': message, 'category':category}, function(data, status) {
+      });
+
+      //update view
+      var vote_element_string = `vote-${message}-${category}`;
+      var vote_element = document.getElementById(vote_element_string);
+      var vote_count = parseInt(vote_element.innerHTML);
+      vote_element.innerHTML = vote_count + 1;
+
+
     }
 
 
@@ -174,12 +223,21 @@
 
     }
 
+    function getItinerary() {
+
+
+      $.post("http://127.0.0.1:5000/itinerary-confirmation",  {'message':'test'}, function(data, status) {
+      });
+      alert('posted!');
+      location.href = ''
+    }
+
 
     function addtoCategory(id, category, message) {
 
       console.log(id);
-      console.log(category)
-      debugger;
+      console.log(category);
+      alert('hi');
 
       var message_id = 'message-' + id;
       var message;
@@ -190,13 +248,16 @@
       if (id === -1) {
         need_recent_msg = true;
         message = message;
-      } else {
+      }
+      /*else {
+          debugger;
           message = document.getElementById(message_id).innerHTML;
       }
-
+*/
       //update category
-      $.post("http://127.0.0.1:5000/category-update",  {'message': message, 'type': category, 'id': message_id, 'need_recent_msg':need_recent_msg}, function(data, status) {
+      $.post("http://localhost:5000/category-update",  {'message': message, 'type': category, 'id': message_id, 'need_recent_msg':need_recent_msg}, function(data, status) {
       });
+
 
       //emit to socket
       socket.emit('category update', {

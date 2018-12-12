@@ -1,0 +1,22 @@
+<html>
+    <head>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+      <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko:600|Varela+Round" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Nunito|Poppins" rel="stylesheet">
+    </head>
+    <body>
+      <div class='trip-planner-welcome-box'>
+        <div class='landing-logo-container'>
+          <div class='welcome-title'>Itinerize</div>
+        </div>
+        <div class='welcome-sub-text'>Plan your trip with no hassle.</div>
+        <div class='category-overview'>
+            <img src="{{url_for('static', filename='dining.svg')}}" ></img>
+            <img src="{{url_for('static', filename='flight.svg')}}" ></img>
+            <img src="{{url_for('static', filename='hotel.svg')}}" ></img>
+            <img src="{{url_for('static', filename='activity.svg')}}" ></img>
+        </div>
+        <div class='welcome-login' onclick="location.href = '/login'">Login Now</div>
+      </div>
+    </body>
+</html>

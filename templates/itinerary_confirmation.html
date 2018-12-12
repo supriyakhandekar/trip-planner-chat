@@ -1,0 +1,33 @@
+<html>
+    <head>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+      <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Teko:600|Varela+Round" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Nunito|Poppins" rel="stylesheet">
+    </head>
+    <body>
+      <div class='confirmation-header'>
+        <div onclick="location.href = '/'" class='confirmation-back-btn'>Go back</div>
+        <div class='confirmation-header-text'>You're all set.</div>
+      </div>
+      <div class='container-category'>
+        <div class='category-confirmation'>
+          <img class='category-icon' src="{{url_for('static', filename='flight.svg')}}" ></img>
+
+          <div>{{top_flight.message}}</div>
+
+        </div>
+        <div class='category-confirmation'>
+          <img class='category-icon' src="{{url_for('static', filename='hotel.svg')}}" ></img>
+          <div>{{top_hotel.message}}</div>
+        </div>
+        <div class='category-confirmation'>
+          <img class='category-icon' src="{{url_for('static', filename='dining.svg')}}" ></img>
+          <div>{{top_food.message}}</div>
+        </div>
+        <div class='category-confirmation'>
+          <img class ='category-icon' src="{{url_for('static', filename='activity.svg')}}" ></img>
+          <div>{{top_activity.message}}</div>
+        </div>
+      </div>
+    </body>
+</html>

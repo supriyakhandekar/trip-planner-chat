@@ -17,22 +17,23 @@ from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy import desc
 from flask_wtf import FlaskForm
+from flask import Flask
 
 from flask_login import logout_user
 from flask_login import current_user, login_user
 
 import os
 import sqlite3
-import re
 
-project_dir = os.path.dirname(os.path.abspath(__file__))
-database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_18.db"))
+#project_dir = os.path.dirname(os.path.abspath(__file__))
+#database_file = "sqlite:///{}".format(os.path.join(project_dir, "user_message_23.db"))
 
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = '123445667'
-app.config["SQLALCHEMY_DATABASE_URI"] = database_file
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///user_message_24.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 socketio = SocketIO(app)
 db = SQLAlchemy(app)
@@ -152,6 +153,10 @@ def userPage(name):
     return(render_template('message-page.html', messages = user_messages, name = name))
 
 
+@app.route('/landing')
+def homepage():
+    return render_template('landingpage.html')
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -200,6 +205,7 @@ def register():
 @app.route('/')
 def sessions():
     #parseChatData()
+    #return render_template('homepage.html', current_user = current_user)
     return render_template('homepage.html', current_user = current_user, history = UserMessage.query.all(), links = Links.query.all(), hotel= Hotel.query.all(), flight=Flight.query.all(), activity = Activity.query.all(), food = Food.query.all())
 
 @app.route('/category-update', methods=['GET', 'POST'])
@@ -282,8 +288,9 @@ def create_connection(db_file):
         print(e)
 
 if __name__ == '__main__':
-    create_connection("C:\\sqlite\db\user_message_18.db")
+    create_connection("C:\\sqlite\db\user_message_24.db")
     console.log('created connection')
     db.create_all()
+    #db.session.commit()
     #print('about to run')
-    #socketio.run(app, DEBUG=True)
+    socketio.run(app, DEBUG=True)

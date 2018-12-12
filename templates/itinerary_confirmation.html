@@ -12,21 +12,19 @@
       <div class='container-category'>
         <div class='category-confirmation'>
           <img class='category-icon' src="{{url_for('static', filename='flight.svg')}}" ></img>
-
-          <div>{{top_flight.message}}</div>
-
+          <div class='category-confirmation-text'>{{top_flight.message}}</div>
         </div>
         <div class='category-confirmation'>
           <img class='category-icon' src="{{url_for('static', filename='hotel.svg')}}" ></img>
-          <div>{{top_hotel.message}}</div>
+          <div class='category-confirmation-text'>{{top_hotel.message}}</div>
         </div>
         <div class='category-confirmation'>
           <img class='category-icon' src="{{url_for('static', filename='dining.svg')}}" ></img>
-          <div>{{top_food.message}}</div>
+          <div class='category-confirmation-text'>{{top_food.message}}</div>
         </div>
         <div class='category-confirmation'>
           <img class ='category-icon' src="{{url_for('static', filename='activity.svg')}}" ></img>
-          <div>{{top_activity.message}}</div>
+          <div class='category-confirmation-text'>{{top_activity.message}}</div>
         </div>
       </div>
     </body>

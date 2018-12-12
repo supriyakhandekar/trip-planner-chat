@@ -50,42 +50,54 @@
        </form>
        </div>
        <div id='categories'>
-         <img src="{{url_for('static', filename='dining.svg')}}"class='category-icon'></img>
+         <div class='category-icon-box'>
+           <img src="{{url_for('static', filename='dining.svg')}}"class='category-icon'></img>
+           <p class='category-icon-text'>Food</p>
+         </div>
          <div class='category-scroll-box' id='category-food'>
             {% for entry in food %}
               <div class='message-category'>
                 <p class='category-single-message'>{{entry.message}}</p>
-                <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','food')"></img>
+                <img src="{{url_for('static', filename='up-arrow.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','food')"></img>
                 <p id='vote-{{entry.message}}-food' class='category-single-message'>{{entry.vote}}</p>
               </div>
             {% endfor %}
         </div>
-        <img src="{{url_for('static', filename='activity.svg')}}"class='category-icon'></img>
+        <div class='category-icon-box'>
+          <img src="{{url_for('static', filename='activity.svg')}}"class='category-icon'></img>
+          <p class='category-icon-text'>Activity</p>
+        </div>
         <div class='category-scroll-box' id='category-activity'>
              {% for entry in activity %}
              <div class='message-category'>
                <p class='category-single-message'>{{entry.message}}</p>
-               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','activity')"></img>
+               <img src="{{url_for('static', filename='up-arrow.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','activity')"></img>
                <p id='vote-{{entry.message}}-activity' class='category-single-message'>{{entry.vote}}</p>
              </div>
             {% endfor %}
         </div>
-        <img src="{{url_for('static', filename='flight.svg')}}"class='category-icon'/>
+        <div class='category-icon-box'>
+          <img src="{{url_for('static', filename='flight.svg')}}"class='category-icon'/>
+          <p class='category-icon-text'>Travel</p>
+        </div>
         <div class='category-scroll-box' id='category-flight'>
              {% for entry in flight %}
              <div class='message-category'>
                <p class='category-single-message'>{{entry.message}}</p>
-               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','flight')"/>
+               <img src="{{url_for('static', filename='up-arrow.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','flight')"/>
                <p class='category-single-message' id='vote-{{entry.message}}-flight'>{{entry.vote}}</p>
             </div>
             {% endfor %}
         </div>
-        <img src="{{url_for('static', filename='hotel.svg')}}"class='category-icon'/>
+        <div class='category-icon-box'>
+          <img src="{{url_for('static', filename='hotel.svg')}}"class='category-icon'/>
+          <p class='category-icon-text'>Hotel</p>
+        </div>
         <div class='category-scroll-box' id='category-hotel'>
              {% for entry in hotel %}
              <div class='message-category'>
                <p class='category-single-message'>{{entry.message}}</p>
-               <img src="{{url_for('static', filename='upvote.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','hotel')"/>
+               <img src="{{url_for('static', filename='up-arrow.svg')}}"class='category-icon' onClick="upVote('{{entry.message}}','hotel')"/>
                <p class='category-single-message' id='vote-{{entry.message}}-hotel'>{{entry.vote}}</p>
             </div>
             {% endfor %}
